@@ -19,7 +19,7 @@ public class OracleConnectionPool extends ConnectionPool{
 //	private static OracleConnectionPool instance = null;
 	private DataSource ds;
 	public OracleConnectionPool(MetadataInfo dbinfo){
-		this.dbinfo = dbinfo;
+		super(dbinfo);
 	}
 	
 //	public static  OracleConnectionPool getInstance(MetadataInfo dbinfo) {

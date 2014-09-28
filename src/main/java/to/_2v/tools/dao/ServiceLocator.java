@@ -10,6 +10,7 @@ import to._2v.tools.dao.pool.ApacheConnectionPool;
 import to._2v.tools.dao.pool.C3P0ConnectionPool;
 import to._2v.tools.dao.pool.ConnectionPool;
 import to._2v.tools.dao.pool.JNDIConnectionPool;
+import to._2v.tools.dao.pool.NoneConnectionPool;
 import to._2v.tools.dao.pool.ODBCConnectionPool;
 import to._2v.tools.dao.pool.OracleConnectionPool;
 
@@ -25,7 +26,7 @@ public class ServiceLocator {
 	private MetadataInfo dbinfo = null;
 	protected boolean checked = true;
 	private static boolean showSql = false;
-	private static Hashtable locators = new Hashtable();
+	private static Hashtable<String,ServiceLocator> locators = new Hashtable<String,ServiceLocator>();
 	
 	private static final Log logger = LogFactory.getLog(ServiceLocator.class);
 	
@@ -34,10 +35,10 @@ public class ServiceLocator {
 	synchronized public static ServiceLocator getInstance() {
 		if (instance == null) {
 			instance = new ServiceLocator();
+			if(logger.isDebugEnabled())
+				logger.debug("ServiceLocator instance: "+instance);
 			lazy();
 		}
-		if(logger.isDebugEnabled())
-			logger.debug("ServiceLocator instance: "+instance);
 		return instance;
 	}
 	synchronized public static ServiceLocator getInstance(String ds) {
@@ -46,7 +47,7 @@ public class ServiceLocator {
 		}
 		if(logger.isDebugEnabled())
 			logger.debug("DataSource: "+ds);
-		ServiceLocator _instance = (ServiceLocator)locators.get(ds);
+		ServiceLocator _instance = locators.get(ds);
 		if(logger.isDebugEnabled())
 			logger.debug("ServiceLocator instance: "+_instance);
 		return _instance;
@@ -69,6 +70,8 @@ public class ServiceLocator {
 			pool = new ApacheConnectionPool(dbinfo);
 		}else if(dbinfo.getConnectionPool().equals(Persist.C3P0)){
 			pool = new C3P0ConnectionPool(dbinfo);
+		}else if(dbinfo.getConnectionPool().equals(Persist.NONE)){
+			pool = new NoneConnectionPool(dbinfo);
 		}else{
 			return;
 		}
@@ -86,11 +89,22 @@ public class ServiceLocator {
 		if (!Persist.isReady() || getInstance().getDbinfo() == null) {
 			if(logger.isInfoEnabled())
 				logger.info("lazy ...");
-			Persist.configure("persist.properties");
-			getInstance().setDataSource(new MetadataInfo(Persist.getProperty(Persist.DBCP), 
+			Persist.configure(Persist.DEFAULT_FILE);
+			
+			MetadataInfo dbinfo = new MetadataInfo(Persist.getProperty(Persist.DBCP), 
 					Persist.getProperty(Persist.DataSource), Persist.getProperty(Persist.DriverName), 
 					Persist.getProperty(Persist.JdbcURL), Persist.getProperty(Persist.User), 
-					Persist.getProperty(Persist.Password)));
+					Persist.getProperty(Persist.Password));
+			if(Persist.getProperty(Persist.ODBC)!=null && Persist.getProperty(Persist.ODBC).length()>0){
+				if(Persist.getProperty(Persist.ODBC).equals(Persist.DSN)){
+					dbinfo.setDatabaseType(Persist.ODBC);
+					dbinfo.setDataSource(Persist.getProperty(Persist.ODBC_PATH));
+				} else{
+					dbinfo.setDatabaseType(Persist.getProperty(Persist.ODBC));
+					dbinfo.setOdbcPath(Persist.getProperty(Persist.ODBC_PATH));
+				}
+			}
+			getInstance().setDataSource(dbinfo);
 		}
 	}
 	public static boolean isShowSql() {

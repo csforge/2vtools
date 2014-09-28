@@ -19,7 +19,7 @@ public class JNDIConnectionPool extends ConnectionPool {
 //	private JNDIConnectionPool instance = null;
 	private DataSource ds;
 	public JNDIConnectionPool(MetadataInfo dbinfo){
-		this.dbinfo = dbinfo;
+		super(dbinfo);
 	}
 	
 //	public static JNDIConnectionPool getInstance(MetadataInfo dbinfo) {

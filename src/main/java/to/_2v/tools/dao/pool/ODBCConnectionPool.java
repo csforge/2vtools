@@ -18,12 +18,13 @@ public class ODBCConnectionPool extends ConnectionPool{
 	private DataSource ds;
 	
 	public ODBCConnectionPool(MetadataInfo dbinfo){
-		this.dbinfo = dbinfo;
+		super(dbinfo);
 	}
 	
 	private void setDataSource(DataSource ds){
 		this.ds = ds;
 	}
+	@SuppressWarnings("restriction")
 	public void setDataSource(){
 		try {
 			sun.jdbc.odbc.ee.ConnectionPoolDataSource cpds = new sun.jdbc.odbc.ee.ConnectionPoolDataSource(

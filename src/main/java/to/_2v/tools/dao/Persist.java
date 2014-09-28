@@ -15,6 +15,7 @@ import to._2v.tools.util.Configurator;
 
 public class Persist {
 	private static Log logger = LogFactory.getLog(Persist.class);
+	public final static String DEFAULT_FILE = "persist.properties";
 	public final static String ACCESS = "access";
 	public final static String EXCEL = "excel";
 	public final static String DBASE = "dbase";
@@ -50,6 +51,7 @@ public class Persist {
 	public final static String APACHE = "apache";
 	public final static String JNDI = "jndi";
 	public final static String C3P0 = "c3p0";
+	public final static String NONE = "none";
 	
 	public final static String SQL_KEY = "SqlKey";
 	public final static String SQL_STATEMENT = "SqlStatement";

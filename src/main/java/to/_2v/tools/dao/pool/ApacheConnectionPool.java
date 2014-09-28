@@ -21,7 +21,7 @@ public class ApacheConnectionPool extends ConnectionPool {
 	private DataSourceConnectionFactory factory;
 	private javax.sql.DataSource ds;
 	public ApacheConnectionPool(MetadataInfo dbinfo){
-		this.dbinfo = dbinfo;
+		super(dbinfo);
 	}
 	
 //	public static ApacheConnectionPool getInstance(MetadataInfo dbinfo) {

@@ -15,13 +15,15 @@ public class MetadataInfo {
 	private String driverType;
 	private String properties;
 	
+	private String odbcPath;
+	
 	/**
 	 * use JNDI DataSource
 	 * @param dataSource
 	 */
 	public MetadataInfo(String dataSource) {
 		this.connectionPool = "jndi";
-		this.dataSource = dataSource;
+		this.setDataSource(dataSource);
 	}
 	/**
 	 * 
@@ -30,7 +32,7 @@ public class MetadataInfo {
 	 */
 	public MetadataInfo(String connectionPool, String dataSource) {
 		this.connectionPool = connectionPool;
-		this.dataSource = dataSource;
+		this.setDataSource(dataSource);
 	}
 	/**
 	 * 
@@ -60,7 +62,7 @@ public class MetadataInfo {
 	public MetadataInfo(String connectionPool, String dataSource,
 			String driverName, String jdbcUrl, String user, String password) {
 		this.connectionPool = connectionPool;
-		this.dataSource = dataSource;
+		this.setDataSource(dataSource);
 		this.driverName = driverName;
 		this.jdbcUrl = jdbcUrl;
 		this.user = user;
@@ -81,7 +83,7 @@ public class MetadataInfo {
 			String driverType, String host, String schema, String user,
 			String password, String properties) {
 		this.connectionPool = connectionPool;
-		this.dataSource = dataSource;
+		this.setDataSource(dataSource);
 		this.driverType = driverType;
 		this.host = host;
 		this.schema = schema;
@@ -217,13 +219,22 @@ public class MetadataInfo {
 		return dataSource;
 	}
 	public void setDataSource(String dataSource) {
-		this.dataSource = dataSource;
+		if(dataSource!=null && dataSource.length()==0)
+			this.dataSource = null;
+		else
+			this.dataSource = dataSource;
 	}
 	public String getConnectionPool() {
 		return connectionPool;
 	}
 	public void setConnectionPool(String connectionPool) {
 		this.connectionPool = connectionPool;
+	}
+	public String getOdbcPath() {
+		return odbcPath;
+	}
+	public void setOdbcPath(String odbcPath) {
+		this.odbcPath = odbcPath;
 	}
 
 }

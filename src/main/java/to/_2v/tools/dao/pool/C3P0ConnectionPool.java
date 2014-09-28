@@ -20,7 +20,7 @@ public class C3P0ConnectionPool extends ConnectionPool {
 	private static final Log logger = LogFactory.getLog(C3P0ConnectionPool.class);
 	private DataSource ds;
 	public C3P0ConnectionPool(MetadataInfo dbinfo){
-		this.dbinfo = dbinfo;
+		super(dbinfo);
 	}
 	
 	public Connection getConnection() {
