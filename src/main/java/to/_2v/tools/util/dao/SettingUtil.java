@@ -23,12 +23,15 @@ public class SettingUtil extends DAOUtil {
 	private final static String select_sql = "select * from sys_setting where sys=?";
 	private final static String update_sql = "update sys_setting set value=? where sys=? and name=?";
 	private final static String insert_sql = "insert into sys_setting(sys,name,value) values(?,?,?)";
-	private static SettingUtil _instance;
+	private static volatile SettingUtil _instance;
 
-	public static synchronized SettingUtil getInstance() {
+	public static SettingUtil getInstance() {
 		if (_instance == null) {
-			_instance = new SettingUtil();
-//			exists();
+			synchronized (SettingUtil.class) {
+				if (_instance == null)
+					_instance = new SettingUtil();
+				// exists();
+			}
 		}
 
 		return _instance;

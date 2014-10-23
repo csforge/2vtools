@@ -7,7 +7,7 @@ import java.util.List;
 import to._2v.tools.util.StringUtil;
 
 
-public class RowList extends LinkedList<Object> {
+public class RowList<T> extends LinkedList<Object> {
 
 	private static final long serialVersionUID = -7878472437260034984L;
 	public Double getDouble(int index){

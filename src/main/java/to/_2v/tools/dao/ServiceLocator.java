@@ -21,7 +21,7 @@ import to._2v.tools.dao.pool.OracleConnectionPool;
  */
 public class ServiceLocator {
 
-	private static ServiceLocator instance = null;
+	private static volatile ServiceLocator instance = null;
 	private ConnectionPool pool = null;
 	private MetadataInfo dbinfo = null;
 	protected boolean checked = true;
@@ -32,16 +32,23 @@ public class ServiceLocator {
 	
 	private ServiceLocator(){
 	}
-	synchronized public static ServiceLocator getInstance() {
+	/**
+	 * Double-checked Locking
+	 * @return
+	 */
+	public static ServiceLocator getInstance() {
 		if (instance == null) {
-			instance = new ServiceLocator();
-			if(logger.isDebugEnabled())
-				logger.debug("ServiceLocator instance: "+instance);
-			lazy();
+			synchronized (ServiceLocator.class) {
+				if (instance == null)
+					instance = new ServiceLocator();
+				if (logger.isDebugEnabled())
+					logger.debug("ServiceLocator instance: " + instance);
+				lazy();
+			}
 		}
 		return instance;
 	}
-	synchronized public static ServiceLocator getInstance(String ds) {
+	public static ServiceLocator getInstance(String ds) {
 		if (ds == null) {
 			return getInstance();
 		}

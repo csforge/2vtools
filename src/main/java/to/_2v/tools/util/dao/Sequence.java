@@ -28,7 +28,7 @@ public class Sequence extends DAOUtil {
 	private static String update_desc_sql;
 	private static String insert_sql;
 
-	private static Sequence _instance;
+	private static volatile Sequence _instance;
 /*
  * DROP TABLE IF EXISTS `sys_sequence`;
 CREATE TABLE `sequence` (
@@ -67,9 +67,14 @@ exec proc_seq_id 'EVENT_SMS_ID'
 		update_desc_sql = "update "+table+"sys_sequence set s_value=s_value-1 where seq=?";
 		insert_sql = "insert into "+table+"sys_sequence(seq,s_order,s_value) values(?,?,?)";
 	}
-	synchronized static Sequence getInstance() {	
+
+	static Sequence getInstance() {
 		if (_instance == null) {
-			_instance = new Sequence();
+			synchronized (Sequence.class) {
+				if (_instance == null) {
+					_instance = new Sequence();
+				}
+			}
 		}
 		return _instance;
 	}
